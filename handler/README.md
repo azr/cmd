@@ -1,4 +1,4 @@
-# handler
+# handler [![GoDoc](https://godoc.org/github.com/azr/generators/handler?status.png)](https://godoc.org/github.com/azr/generators/handler)
 --
 Handler builds typed golang http handlers.
 
