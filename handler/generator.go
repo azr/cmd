@@ -97,6 +97,7 @@ var (
 	funcNames        = flag.String("func", "", "comma-separated list of func names; must be set")
 	encodingPkgNames = flag.String("encoding", "", "comma-separated list of encoding pkgs; must be set")
 	output           = flag.String("output", "", "output file name; default srcdir/generated_handlers.go")
+	decode           = flag.Bool("decode", true, "do decode http body with encoding")
 )
 
 // Usage is a replacement usage function for the flags package.
@@ -161,7 +162,7 @@ func main() {
 	for _, funcName := range funcs {
 		for _, encodingPkgName := range encodings {
 			pkg, _ := build.Import(encodingPkgName, ".", 0)
-			g.generate(funcName, pkg.Name)
+			g.generate(funcName, pkg.Name, *decode)
 		}
 	}
 
@@ -298,7 +299,7 @@ func (pkg *Package) check(fs *token.FileSet, astFiles []*ast.File) {
 }
 
 // generate produces the Http handler method for the func and encoding
-func (g *Generator) generate(funcName, encodingPkgName string) {
+func (g *Generator) generate(funcName, encodingPkgName string, decode bool) {
 	found := false
 	paramfullname := ""
 	for _, file := range g.pkg.files {
@@ -314,7 +315,7 @@ func (g *Generator) generate(funcName, encodingPkgName string) {
 	}
 
 	if found {
-		g.build(funcName, encodingPkgName, paramfullname)
+		g.build(funcName, encodingPkgName, paramfullname, decode)
 	} else {
 		fmt.Printf("Func not found: %s", funcName)
 	}
@@ -363,7 +364,7 @@ func (f *File) genDecl(node ast.Node) bool {
 }
 
 // build generates the variables and String method for a single run of contiguous values.
-func (g *Generator) build(funcName, pkgName, paramfullname string) {
+func (g *Generator) build(funcName, pkgName, paramfullname string, decode bool) {
 	type Handler struct {
 		Func        string
 		EncodingPkg string
