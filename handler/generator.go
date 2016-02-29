@@ -2,7 +2,7 @@
 //
 // Given a func F :
 //  func F(x X) (status int, resp interface{}) )
-// and a format pkg like encoding/json.
+// and an encoding pkg like encoding/json.
 //
 // handler will create an http handler :
 //
@@ -13,7 +13,7 @@
 // The file is created in the same package and directory as the package that defines F.
 //
 //ex:
-//  //go:generate handler -func=PutJob -format=json
+//  //go:generate handler -func=PutJob -encoding encoding/json
 //  package jober
 //
 //  type job struct { A string }
@@ -86,6 +86,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"golang.org/x/tools/go/types"
 
@@ -363,24 +364,42 @@ func (f *File) genDecl(node ast.Node) bool {
 
 // build generates the variables and String method for a single run of contiguous values.
 func (g *Generator) build(funcName, pkgName, paramfullname string) {
-	g.Printf("\n")
-	g.Printf(poolWrapp, funcName, pkgName, paramfullname)
+	type Handler struct {
+		Func        string
+		EncodingPkg string
+		T           string
+		Decode      bool
+	}
+	t := template.Must(template.New("handler").Parse(handlerWrap))
+
+	err := t.Execute(&g.buf, Handler{
+		Func:        funcName,
+		EncodingPkg: pkgName,
+		T:           paramfullname,
+		Decode:      true,
+	})
+	checkError(err)
 }
 
-// Arguments to format are:
-//  [1]: Func called
-//  [2]: uppercase pkg import name
-//  [3]: Type of the first parameter
-const poolWrapp = `
-func %[1]sHandler%[2]s(w http.ResponseWriter, r *http.Request) {
-	x := %[3]s{}
-	err := %[2]s.NewDecoder(r.Body).Decode(&x)
+const handlerWrap = `
+func {{.Func}}Handler{{.EncodingPkg}}(w http.ResponseWriter, r *http.Request) {
+	x := {{.T}}{}
+	{{if .Decode}}
+	err := {{.EncodingPkg}}.NewDecoder(r.Body).Decode(&x)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	resp, s := %[1]s(x)
+	{{end}}
+	resp, s := {{.Func}}(x)
 	w.WriteHeader(s)
-	%[2]s.NewEncoder(w).Encode(resp)
+	{{.EncodingPkg}}.NewEncoder(w).Encode(resp)
 }
 `
+
+func checkError(err error) {
+	if err != nil {
+		fmt.Println("Fatal error ", err.Error())
+		os.Exit(1)
+	}
+}
