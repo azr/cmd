@@ -2,7 +2,7 @@
 
 Generate go files with common and repetitive usages.
 
-## *[handler](/generators/handler)*
+## *[handler](/handler)*
 Generate typed http handlers
 
 From
@@ -11,11 +11,11 @@ From
 
 to
 ```
-func ([context.Context,] YourStruct [,context.Context]) (resp interface{}, status int)
+func ([context.Context,] YourStruct) (resp interface{}, status int)
 ```
 Generator
 
 
-## *[pooler](/generators/pooler)*
+## *[pooler](/pooler)*
 
 Generate *typed* [sync.Pool](https://golang.org/pkg/sync/#Pool) wrappers
