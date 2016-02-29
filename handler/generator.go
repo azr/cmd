@@ -355,7 +355,7 @@ func (f *File) genDecl(node ast.Node) bool {
 			// import type like pkgname.X
 			f.paramfullname = fmt.Sprintf("%s.%s", v.X, v.Sel)
 		default:
-			log.Printf("Could not guess var full name, type not expected: %v")
+			log.Printf("Could not guess var full name, type not expected: %v", v)
 			return false
 		}
 		f.found = true
