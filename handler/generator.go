@@ -161,7 +161,7 @@ func main() {
 	for _, funcName := range funcs {
 		for _, encodingPkgName := range encodings {
 			pkg, _ := build.Import(encodingPkgName, ".", 0)
-			g.generate(funcName, strings.ToUpper(pkg.Name))
+			g.generate(funcName, pkg.Name)
 		}
 	}
 
@@ -370,7 +370,12 @@ func (g *Generator) build(funcName, pkgName, paramfullname string) {
 		T           string
 		Decode      bool
 	}
-	t := template.Must(template.New("handler").Parse(handlerWrap))
+
+	funcMap := template.FuncMap{
+		"ToUpper": strings.ToUpper,
+	}
+
+	t := template.Must(template.New("handler").Funcs(funcMap).Parse(handlerWrap))
 
 	err := t.Execute(&g.buf, Handler{
 		Func:        funcName,
@@ -382,7 +387,7 @@ func (g *Generator) build(funcName, pkgName, paramfullname string) {
 }
 
 const handlerWrap = `
-func {{.Func}}Handler{{.EncodingPkg}}(w http.ResponseWriter, r *http.Request) {
+func {{.Func}}Handler{{.EncodingPkg | ToUpper}}(w http.ResponseWriter, r *http.Request) {
 	x := {{.T}}{}
 	{{if .Decode}}
 	err := {{.EncodingPkg}}.NewDecoder(r.Body).Decode(&x)
