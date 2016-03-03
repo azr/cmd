@@ -6,11 +6,10 @@
 //
 // handler will create an http handler :
 //
-//   func FHandlerFORMAT(w http.ResponseWriter, r *http.Request)
+//   func FHandlerJSON(w http.ResponseWriter, r *http.Request)
 //   // decode
 //   // call F()
 //
-// The file is created in the same package and directory as the package that defines F.
 //
 //ex:
 //  //go:generate handler -func=PutJob -encoding encoding/json
