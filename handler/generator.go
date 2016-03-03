@@ -97,7 +97,6 @@ var (
 	funcNames        = flag.String("func", "", "comma-separated list of func names; must be set")
 	encodingPkgNames = flag.String("encoding", "", "comma-separated list of encoding pkgs; must be set")
 	output           = flag.String("output", "", "output file name; default srcdir/generated_handlers.go")
-	decode           = flag.Bool("decode", true, "do decode http body with encoding")
 )
 
 // Usage is a replacement usage function for the flags package.
@@ -162,7 +161,7 @@ func main() {
 	for _, funcName := range funcs {
 		for _, encodingPkgName := range encodings {
 			pkg, _ := build.Import(encodingPkgName, ".", 0)
-			g.generate(funcName, pkg.Name, *decode)
+			g.generate(funcName, pkg.Name)
 		}
 	}
 
@@ -299,7 +298,7 @@ func (pkg *Package) check(fs *token.FileSet, astFiles []*ast.File) {
 }
 
 // generate produces the Http handler method for the func and encoding
-func (g *Generator) generate(funcName, encodingPkgName string, decode bool) {
+func (g *Generator) generate(funcName, encodingPkgName string) {
 	found := false
 	paramfullname := ""
 	for _, file := range g.pkg.files {
@@ -315,7 +314,7 @@ func (g *Generator) generate(funcName, encodingPkgName string, decode bool) {
 	}
 
 	if found {
-		g.build(funcName, encodingPkgName, paramfullname, decode)
+		g.build(funcName, encodingPkgName, paramfullname)
 	} else {
 		fmt.Printf("Func not found: %s", funcName)
 	}
@@ -364,12 +363,11 @@ func (f *File) genDecl(node ast.Node) bool {
 }
 
 // build generates the variables and String method for a single run of contiguous values.
-func (g *Generator) build(funcName, pkgName, paramfullname string, decode bool) {
+func (g *Generator) build(funcName, pkgName, paramfullname string) {
 	type Handler struct {
 		Func        string
 		EncodingPkg string
 		T           string
-		Decode      bool
 	}
 
 	funcMap := template.FuncMap{
@@ -382,7 +380,6 @@ func (g *Generator) build(funcName, pkgName, paramfullname string, decode bool) 
 		Func:        funcName,
 		EncodingPkg: pkgName,
 		T:           paramfullname,
-		Decode:      true,
 	})
 	checkError(err)
 }
@@ -390,13 +387,11 @@ func (g *Generator) build(funcName, pkgName, paramfullname string, decode bool) 
 const handlerWrap = `
 func {{.Func}}Handler{{.EncodingPkg | ToUpper}}(w http.ResponseWriter, r *http.Request) {
 	x := {{.T}}{}
-	{{if .Decode}}
 	err := {{.EncodingPkg}}.NewDecoder(r.Body).Decode(&x)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	{{end}}
 	resp, s := {{.Func}}(x)
 	w.WriteHeader(s)
 	{{.EncodingPkg}}.NewEncoder(w).Encode(resp)
