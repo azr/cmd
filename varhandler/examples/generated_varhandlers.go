@@ -26,7 +26,12 @@ func SimpleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Simple(param0, param1, param2)
+	err = Simple(param0, param1, param2)
+	if err != nil {
+		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		return
+	}
+
 }
 
 func ImportHandler(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +61,12 @@ func ImportHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Import(param0, param1, param2, param3)
+	err = Import(param0, param1, param2, param3)
+	if err != nil {
+		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		return
+	}
+
 }
 
 func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, status int, err error) {

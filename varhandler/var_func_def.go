@@ -14,6 +14,13 @@ import (
 type FuncDefinition struct {
 	Name string // of the function
 
+	//wether or not a status is returned by the handler
+	Status bool
+
+	//wether or not a response is returned by the handler
+	Response bool
+
+	//params the functions take
 	Params []Param
 }
 

@@ -36,14 +36,14 @@
 //       }
 //       resp, status, err := F([context.Background()], x, y, z, zz)
 //       if err != nil {
-//       	HandleHttpErrorWithDefaultStatus(w, http.InternalServerError, err)
+//       	HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
 //       	return
 //       }
 //       if status != 0 { // code generated if status is returned
 //       	w.WriteHeader(status)
 //       }
 //       if resp != nil { // code generated if resp object is returned
-//       	HandleHttpResponse()
+//       	HandleHttpResponse(w, r, resp)
 //       }
 //   }
 //
@@ -389,7 +389,27 @@ func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 {{end}}
-	{{.Name}}({{range $i, $param := .Params}} {{if gt $i 0}},{{end}} param{{$i}}{{end}})
+{{if .Response}}
+	var response interface{}
+{{end}}
+{{if .Status}}
+	var status int
+{{end}}
+	{{if .Response}}resp, {{end}}{{if .Status}}status, {{end}}err = {{.Name}}({{range $i, $param := .Params}} {{if gt $i 0}},{{end}} param{{$i}}{{end}})
+	if err != nil {
+		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		return
+	}
+{{if .Status}}
+	if status != 0 {
+		w.WriteHeader(status)
+	}
+{{end}}
+{{if .Response}}
+	if resp != nil {
+		HandleHttpResponse(w, r, resp)
+	}
+{{end}}
 }
 `
 
