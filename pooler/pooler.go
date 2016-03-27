@@ -49,7 +49,7 @@
 // with the -output flag.
 //
 // This code is a small update from https://godoc.org/golang.org/x/tools/cmd/stringer .
-package main // import "github.com/azr/pooler"
+package main // import "github.com/azr/generators/pooler"
 
 import (
 	"bytes"

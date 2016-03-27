@@ -69,7 +69,7 @@
 // with the -output flag.
 //
 // Support of contexts is comming soon.
-package main // import "github.com/azr/handler"
+package main // import "github.com/azr/generators/handler"
 
 import (
 	"bytes"
