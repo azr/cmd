@@ -1,4 +1,4 @@
-// VarHandler wraps variing http handler funcs
+// VarHandler genrate wrappers for variing http handler funcs
 //
 // Given a pkg :
 // 	//go:generate varhandler
