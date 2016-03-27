@@ -34,7 +34,7 @@
 //       }
 //   }
 //
-//   func HandleHttpErrorWithDefaultStatus(status int, err error) {
+//   func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, status int, err error) {
 //       type HttpError interface {
 //       	HttpError() (error string, code int)
 //       }
@@ -45,9 +45,9 @@
 //       default:
 //       	w.WriteHeader(status)
 //       case HttpError:
-//       	error, code := t.HttpError()
-//       	t.Error(w, error, code)
-//       case HttpError:
+//       	err, code := t.HttpError()
+//       	http.Error(w, err, code)
+//       case SelfHttpError:
 //       	t.HttpError(w)
 //       }
 //   }
@@ -59,7 +59,7 @@
 //       case http.Handler:
 //       	t.ServeHTTP(w, r)
 //       case []byte:
-//       	t.Write(t)
+//       	w.Write(t)
 //       }
 //   }
 //
