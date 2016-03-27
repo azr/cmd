@@ -159,9 +159,17 @@ func main() {
 	g.Printf("\n")
 	g.Printf("import \"net/http\"\n") // Used by all methods.
 
-	// Run generate for each func.
+	var definitions []FuncDefinition
+
 	for _, funcName := range funcs {
-		g.generate(funcName)
+		// generate import for func if any
+		// and generate definition of func for latter call
+		definitions = append(definitions, g.generateImportPaths(funcName))
+	}
+	for _, definition := range definitions {
+		if definition.Name != "" { // func was found
+			g.writeFuncDef(definition)
+		}
 	}
 
 	g.Printf(utilFuncs)
@@ -172,7 +180,7 @@ func main() {
 	// Write to file.
 	outputName := output
 	if outputName == "" {
-		outputName = filepath.Join(dir, "generated_handlers.go")
+		outputName = filepath.Join(dir, "generated_varhandlers.go")
 	}
 	err := ioutil.WriteFile(outputName, src, 0644)
 	if err != nil {
@@ -205,6 +213,7 @@ type Package struct {
 	dir      string
 	name     string
 	defs     map[*ast.Ident]types.Object
+	pkgs     map[string]*types.Package
 	files    []*File
 	typesPkg *types.Package
 }
@@ -265,6 +274,7 @@ func (g *Generator) parsePackage(directory string, names []string, text interfac
 			pkg:  g.pkg,
 		})
 	}
+
 	if len(astFiles) == 0 {
 		log.Fatalf("%s: no buildable Go files", directory)
 	}
@@ -278,20 +288,24 @@ func (g *Generator) parsePackage(directory string, names []string, text interfac
 // check type-checks the package. The package must be OK to proceed.
 func (pkg *Package) check(fs *token.FileSet, astFiles []*ast.File) {
 	pkg.defs = make(map[*ast.Ident]types.Object)
-	config := types.Config{FakeImportC: true}
+	config := types.Config{
+		FakeImportC: true,
+		Packages:    make(map[string]*types.Package),
+	}
 	info := &types.Info{
 		Defs: pkg.defs,
 	}
-	log.Printf("check pkg: %s", pkg.dir)
 	typesPkg, err := config.Check(pkg.dir, fs, astFiles, info)
 	if err != nil {
 		log.Fatalf("checking package: %s", err)
 	}
 	pkg.typesPkg = typesPkg
+	pkg.pkgs = config.Packages
 }
 
-// generate produces the Http varing handler method calling the func
-func (g *Generator) generate(funcName string) {
+// generateImportPaths parses the funcs that are going to be called
+// and generates import paths if any generator is in another pkg
+func (g *Generator) generateImportPaths(funcName string) FuncDefinition {
 	found := false
 	for _, file := range g.pkg.files {
 		// Set the state for this run of the walker.
@@ -299,9 +313,18 @@ func (g *Generator) generate(funcName string) {
 		if file.file != nil {
 			ast.Inspect(file.file, file.genDecl)
 			if file.found {
+				for _, param := range file.funcDefinition.Params {
+					if param.Package != "" {
+						for path, pkg := range g.pkg.pkgs {
+							if pkg.Name() == param.Package {
+								g.Printf(`import %s "%s"`, param.Package, path)
+							}
+						}
+					}
+				}
+
 				found = true
-				g.buildFunc(file.funcDefinition)
-				break
+				return file.funcDefinition
 			}
 		}
 	}
@@ -309,6 +332,7 @@ func (g *Generator) generate(funcName string) {
 	if !found {
 		fmt.Printf("Func not found: %s", funcName)
 	}
+	return FuncDefinition{}
 }
 
 // format returns the gofmt-ed contents of the Generator's buffer.
@@ -336,8 +360,6 @@ func (f *File) genDecl(node ast.Node) bool {
 			log.Printf("%s should take at least one parameter, found %d instead", f.funcDefinition.Name, len(decl.Type.Params.List))
 			return false
 		}
-		print("found it !")
-
 		ok := f.funcDefinition.Parse(decl.Type.Params.List)
 
 		f.found = ok
@@ -345,8 +367,8 @@ func (f *File) genDecl(node ast.Node) bool {
 	return false
 }
 
-// buildFunc generates an handler func
-func (g *Generator) buildFunc(fd FuncDefinition) {
+// writeFuncDef generates an handler func
+func (g *Generator) writeFuncDef(fd FuncDefinition) {
 	funcMap := template.FuncMap{
 		"ToLower": strings.ToLower,
 	}
