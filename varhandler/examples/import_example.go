@@ -1,3 +1,4 @@
+//go:generate varhandler -func Simple,Import,Status,Response,ResponseStatus
 package main
 
 import "github.com/azr/generators/varhandler/examples/z"
