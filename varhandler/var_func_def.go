@@ -1,15 +1,70 @@
 package main
 
 import (
+	"fmt"
 	"go/ast"
+	"log"
 
 	_ "golang.org/x/tools/go/gcimporter"
 )
 
+//FuncDefinition represents
+//the definition of a function
+//that's going to be called by the generated code
 type FuncDefinition struct {
-	Name string
+	Name string // of the function
+
+	Params []Param
 }
 
-func (fd *FuncDefinition) Parse(list []*ast.Field) bool {
+type Param struct {
+	//Name used inside the function
+	Name string
+
+	//the name of the func that will generate our param
+	GeneratorName string
+
+	//Defined its a param from another package
+	Package string
+}
+
+func (fd *FuncDefinition) Parse(arguments []*ast.Field) bool {
+	print("found " + fd.Name + "\n")
+	generatorNameSuffix := "HTTP"
+	for _, argument := range arguments {
+		switch v := argument.Type.(type) { // get var type
+		case *ast.Ident:
+			// plain type like `x X` from `type x struct {}`
+			fd.Params = append(fd.Params, Param{
+				Name:          v.Name,
+				GeneratorName: generatorNameSuffix + v.Name,
+			})
+		case *ast.StarExpr:
+			// arg like `x *X`
+			vv, ok := v.X.(*ast.Ident)
+			if !ok {
+				log.Printf("Found an unary star")
+				return false
+			}
+			fd.Params = append(fd.Params, Param{
+				Name:          vv.Name,
+				GeneratorName: generatorNameSuffix + vv.Name,
+			})
+		case *ast.SelectorExpr:
+			// arg like `x pkgname.X`
+			pkg, ok := v.X.(fmt.Stringer)
+			if !ok {
+				log.Printf("could not define type of %#v", v)
+			}
+			fd.Params = append(fd.Params, Param{
+				Name:          v.Sel.String(),
+				GeneratorName: generatorNameSuffix + v.Sel.String(),
+				Package:       pkg.String(),
+			})
+		default:
+			log.Printf("Could not guess var full name, type not expected: %#v", v)
+			return false
+		}
+	}
 	return true
 }

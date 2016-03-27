@@ -16,27 +16,27 @@
 //       var err error
 //       x, err := HTTPX(w, r)
 //       if err != nil {
-//       	HandleHttpErrorWithDefaultStatus(http.StatusBadRequest, err)
+//       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 //       	return
 //       }
 //       y, err := HTTPY(w, r)
 //       if err != nil {
-//       	HandleHttpErrorWithDefaultStatus(http.StatusBadRequest, err)
+//       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 //       	return
 //       }
 //       z, err := HTTPZ(w, r)
 //       if err != nil {
-//       	HandleHttpErrorWithDefaultStatus(http.StatusBadRequest, err)
+//       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 //       	return
 //       }
 //       zz, err := z.HTTPZ(w, r)
 //       if err != nil {
-//       	HandleHttpErrorWithDefaultStatus(http.StatusBadRequest, err)
+//       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 //       	return
 //       }
 //       resp, status, err := F([context.Background()], x, y, z, zz)
 //       if err != nil {
-//       	HandleHttpErrorWithDefaultStatus(http.InternalServerError, err)
+//       	HandleHttpErrorWithDefaultStatus(w, http.InternalServerError, err)
 //       	return
 //       }
 //       if status != 0 { // code generated if status is returned
@@ -351,7 +351,7 @@ func (g *Generator) buildFunc(fd FuncDefinition) {
 		"ToLower": strings.ToLower,
 	}
 
-	t := template.Must(template.New("handler").Funcs(funcMap).Parse(handlerWrap))
+	t := template.Must(template.New("varhandler").Funcs(funcMap).Parse(handlerWrap))
 
 	err := t.Execute(&g.buf, fd)
 	checkError(err)
@@ -359,38 +359,46 @@ func (g *Generator) buildFunc(fd FuncDefinition) {
 
 const handlerWrap = `
 func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
-//:D
+	var err error
+{{range $i, $param := .Params}}
+	param{{$i}}, err := {{if ne $param.Package ""}}{{$param.Package}}.{{end}}{{$param.GeneratorName}}(w, r)
+	if err != nil {
+		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		return
+	}
+{{end}}
+	{{.Name}}({{range $i, $param := .Params}} {{if gt $i 0}},{{end}} param{{$i}}{{end}})
 }
 `
 
 const utilFuncs = `
 func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, status int, err error) {
-    type HttpError interface {
-    	HttpError() (error string, code int)
-    }
-    type SelfHttpError interface {
-    	HttpError(w http.ResponseWriter)
-    }
-    switch t := err.(type) {
-    default:
-    	w.WriteHeader(status)
-    case HttpError:
-    	err, code := t.HttpError()
-    	http.Error(w, err, code)
-    case SelfHttpError:
-    	t.HttpError(w)
-    }
+	type HttpError interface {
+		HttpError() (error string, code int)
+	}
+	type SelfHttpError interface {
+		HttpError(w http.ResponseWriter)
+	}
+	switch t := err.(type) {
+	default:
+		w.WriteHeader(status)
+	case HttpError:
+		err, code := t.HttpError()
+		http.Error(w, err, code)
+	case SelfHttpError:
+		t.HttpError(w)
+	}
 }
 
 func HandleHttpResponse(w http.ResponseWriter, r *http.Request, resp interface{}) {
-    switch t := resp.(type) {
-    default:
-    	// I don't know that type !
-    case http.Handler:
-    	t.ServeHTTP(w, r)
-    case []byte:
-    	w.Write(t)
-    }
+	switch t := resp.(type) {
+	default:
+		// I don't know that type !
+	case http.Handler:
+		t.ServeHTTP(w, r)
+	case []byte:
+		w.Write(t)
+	}
 }
 `
 
