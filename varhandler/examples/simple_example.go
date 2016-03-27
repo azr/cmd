@@ -1,13 +1,9 @@
 package main
 
-import (
-	"net/http"
-	z "z"
+import "net/http"
 
-	"golang.org/x/net/context"
-)
-
-func F(ctx context.Context, x X, y Y, z *Z, zz z.Z) {
+func Simple(x X, y Y, z *Z) error {
+	return nil
 }
 
 func HTTPX(w http.ResponseWriter, r *http.Request) X          { return X{} }
