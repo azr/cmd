@@ -168,6 +168,7 @@ func main() {
 	}
 	for _, definition := range definitions {
 		if definition.Name != "" { // func was found
+			log.Printf("Defining: %s", definition.Name)
 			g.writeFuncDef(definition)
 		}
 	}
@@ -309,7 +310,10 @@ func (g *Generator) generateImportPaths(funcName string) FuncDefinition {
 	found := false
 	for _, file := range g.pkg.files {
 		// Set the state for this run of the walker.
-		file.funcDefinition.Name = funcName
+		file.found = false
+		file.funcDefinition = FuncDefinition{
+			Name: funcName,
+		}
 		if file.file != nil {
 			ast.Inspect(file.file, file.genDecl)
 			if file.found {
@@ -317,7 +321,7 @@ func (g *Generator) generateImportPaths(funcName string) FuncDefinition {
 					if param.Package != "" {
 						for path, pkg := range g.pkg.pkgs {
 							if pkg.Name() == param.Package {
-								g.Printf(`import %s "%s"`, param.Package, path)
+								g.Printf("import %s \"%s\"\n", param.Package, path)
 							}
 						}
 					}
@@ -360,7 +364,10 @@ func (f *File) genDecl(node ast.Node) bool {
 			log.Printf("%s should take at least one parameter, found %d instead", f.funcDefinition.Name, len(decl.Type.Params.List))
 			return false
 		}
-		ok := f.funcDefinition.Parse(decl.Type.Params.List)
+		ok := f.funcDefinition.ParseResults(decl.Type.Results)
+		if ok {
+			ok = f.funcDefinition.ParseArguments(decl.Type.Params.List)
+		}
 
 		f.found = ok
 	}
@@ -390,7 +397,7 @@ func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
 	}
 {{end}}
 {{if .Response}}
-	var response interface{}
+	var resp interface{}
 {{end}}
 {{if .Status}}
 	var status int

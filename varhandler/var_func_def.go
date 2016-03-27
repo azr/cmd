@@ -35,8 +35,35 @@ type Param struct {
 	Package string
 }
 
-func (fd *FuncDefinition) Parse(arguments []*ast.Field) bool {
-	print("found " + fd.Name + "\n")
+func (fd *FuncDefinition) ParseResults(results *ast.FieldList) bool {
+	if len(results.List) == 0 {
+		log.Printf("%s should at least return an error", fd.Name)
+		return false
+	}
+	if len(results.List) == 1 {
+		return true
+	}
+	if len(results.List) == 2 {
+		v, ok := results.List[0].Type.(*ast.Ident)
+		if ok && v.Name == "int" {
+			fd.Status = true
+		} else {
+			fd.Response = true
+		}
+		return true
+	}
+
+	if len(results.List) == 3 {
+		fd.Status = true
+		fd.Response = true
+		return true
+	}
+
+	log.Printf("too many results for %s", fd.Name)
+	return false
+}
+
+func (fd *FuncDefinition) ParseArguments(arguments []*ast.Field) bool {
 	generatorNameSuffix := "HTTP"
 	for _, argument := range arguments {
 		switch v := argument.Type.(type) { // get var type
