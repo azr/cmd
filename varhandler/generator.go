@@ -1,7 +1,10 @@
 // VarHandler genrate wrappers for variing http handler funcs
 //
+// To ease http development process, without breaking
+// normal usage.
+//
 // Given a pkg :
-// 	//go:generate varhandler
+// 	//go:generate varhandler -func F
 //  package server
 //
 //  func F([ctx context.Context], x X, y Y, z *Z, zz z.Z) ([resp interface{},] [status int,] err error) {...}
