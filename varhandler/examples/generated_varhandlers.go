@@ -8,19 +8,19 @@ import z "github.com/azr/generators/varhandler/examples/z"
 func SimpleHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	param0, err := HTTPX(w, r)
+	param0, err := HTTPX(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
 	}
 
-	param1, err := HTTPY(w, r)
+	param1, err := HTTPY(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
 	}
 
-	param2, err := HTTPZ(w, r)
+	param2, err := HTTPZ(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
@@ -37,25 +37,25 @@ func SimpleHandler(w http.ResponseWriter, r *http.Request) {
 func ImportHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	param0, err := HTTPX(w, r)
+	param0, err := HTTPX(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
 	}
 
-	param1, err := HTTPY(w, r)
+	param1, err := HTTPY(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
 	}
 
-	param2, err := HTTPZ(w, r)
+	param2, err := HTTPZ(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
 	}
 
-	param3, err := z.HTTPZ(w, r)
+	param3, err := z.HTTPZ(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
@@ -72,19 +72,19 @@ func ImportHandler(w http.ResponseWriter, r *http.Request) {
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	param0, err := HTTPX(w, r)
+	param0, err := HTTPX(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
 	}
 
-	param1, err := HTTPY(w, r)
+	param1, err := HTTPY(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
 	}
 
-	param2, err := HTTPZ(w, r)
+	param2, err := HTTPZ(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
@@ -107,19 +107,19 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 func ResponseHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	param0, err := HTTPX(w, r)
+	param0, err := HTTPX(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
 	}
 
-	param1, err := HTTPY(w, r)
+	param1, err := HTTPY(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
 	}
 
-	param2, err := HTTPZ(w, r)
+	param2, err := HTTPZ(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
@@ -142,19 +142,19 @@ func ResponseHandler(w http.ResponseWriter, r *http.Request) {
 func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	param0, err := HTTPX(w, r)
+	param0, err := HTTPX(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
 	}
 
-	param1, err := HTTPY(w, r)
+	param1, err := HTTPY(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
 	}
 
-	param2, err := HTTPZ(w, r)
+	param2, err := HTTPZ(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return

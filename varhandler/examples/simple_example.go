@@ -6,9 +6,9 @@ func Simple(x X, y Y, z *Z) error {
 	return nil
 }
 
-func HTTPX(w http.ResponseWriter, r *http.Request) (X, error)  { return X{}, nil }
-func HTTPY(w http.ResponseWriter, r *http.Request) (Y, error)  { return Y{}, nil }
-func HTTPZ(w http.ResponseWriter, r *http.Request) (*Z, error) { return &Z{}, nil }
+func HTTPX(r *http.Request) (X, error)  { return X{}, nil }
+func HTTPY(r *http.Request) (Y, error)  { return Y{}, nil }
+func HTTPZ(r *http.Request) (*Z, error) { return &Z{}, nil }
 
 type X struct {
 }

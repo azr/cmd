@@ -6,30 +6,30 @@
 //
 //  func F([ctx context.Context], x X, y Y, z *Z, zz z.Z) ([resp interface{},] [status int,] err error) {...}
 //  // and funcs
-//  func HTTPX  (w http.ResponseWriter, r *http.Request) (X, error)   {...}
-//  func HTTPY  (w http.ResponseWriter, r *http.Request) (Y, error)   {...}
-//  func HTTPZ  (w http.ResponseWriter, r *http.Request) (*Z, error)  {...}
-//  func z.HTTPZ(w http.ResponseWriter, r *http.Request) (z.Z, error) {...}
+//  func HTTPX  (r *http.Request) (X, error)   {...}
+//  func HTTPY  (r *http.Request) (Y, error)   {...}
+//  func HTTPZ  (r *http.Request) (*Z, error)  {...}
+//  func z.HTTPZ(r *http.Request) (z.Z, error) {...}
 //
 // VarHandler will generate an http handler :
 //   func FVarHandler(w http.ResponseWriter, r *http.Request) {
 //       var err error
-//       x, err := HTTPX(w, r)
+//       x, err := HTTPX(r)
 //       if err != nil {
 //       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 //       	return
 //       }
-//       y, err := HTTPY(w, r)
+//       y, err := HTTPY(r)
 //       if err != nil {
 //       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 //       	return
 //       }
-//       z, err := HTTPZ(w, r)
+//       z, err := HTTPZ(r)
 //       if err != nil {
 //       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 //       	return
 //       }
-//       zz, err := z.HTTPZ(w, r)
+//       zz, err := z.HTTPZ(r)
 //       if err != nil {
 //       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 //       	return
@@ -390,7 +390,7 @@ const handlerWrap = `
 func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
 	var err error
 {{range $i, $param := .Params}}
-	param{{$i}}, err := {{if ne $param.Package ""}}{{$param.Package}}.{{end}}{{$param.GeneratorName}}(w, r)
+	param{{$i}}, err := {{if ne $param.Package ""}}{{$param.Package}}.{{end}}{{$param.GeneratorName}}(r)
 	if err != nil {
 		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 		return
