@@ -7,7 +7,7 @@
 // 	//go:generate varhandler -func F
 //  package server
 //
-//  func F([ctx context.Context], x X, y Y, z *Z, zz z.Z) ([resp interface{},] [status int,] err error) {...}
+//  func F(x X, y Y, z *Z, zz z.Z) ([resp interface{},] [status int,] err error) {...}
 //  // and funcs
 //  func HTTPX  (r *http.Request) (X, error)   {...}
 //  func HTTPY  (r *http.Request) (Y, error)   {...}
@@ -37,7 +37,7 @@
 //       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
 //       	return
 //       }
-//       resp, status, err := F([context.Background()], x, y, z, zz)
+//       resp, status, err := F(x, y, z, zz)
 //       if err != nil {
 //       	HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
 //       	return
