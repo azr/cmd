@@ -1,12 +1,14 @@
-// VarHandler generate wrappers for variing http handler funcs
+// Generate wrappers for variing http handler funcs
 //
 // To ease http development process,
 // enabling reusability
 // and remaining http complient a la go.
 //
 // Given a pkg :
-// 	//go:generate varhandler -func F
+//  //go:generate varhandler -func F
 //  package server
+//
+//  import "github.com/azr/generators/varhandler/examples/z"
 //
 //  func F(x X, y Y, z *Z, zz z.Z) ([resp interface{},] [status int,] err error) {...}
 //  // and funcs

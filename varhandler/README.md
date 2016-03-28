@@ -1,21 +1,23 @@
 # varhandler
 --
-VarHandler generate wrappers for variing http handler funcs
+Generate wrappers for variing http handler funcs
 
 To ease http development process, enabling reusability and remaining http
 complient a la go.
 
 Given a pkg :
 
-    	//go:generate varhandler -func F
-     package server
+    //go:generate varhandler -func F
+    package server
 
-     func F(x X, y Y, z *Z, zz z.Z) ([resp interface{},] [status int,] err error) {...}
-     // and funcs
-     func HTTPX  (r *http.Request) (X, error)   {...}
-     func HTTPY  (r *http.Request) (Y, error)   {...}
-     func HTTPZ  (r *http.Request) (*Z, error)  {...}
-     func z.HTTPZ(r *http.Request) (z.Z, error) {...}
+    import "github.com/azr/generators/varhandler/examples/z"
+
+    func F(x X, y Y, z *Z, zz z.Z) ([resp interface{},] [status int,] err error) {...}
+    // and funcs
+    func HTTPX  (r *http.Request) (X, error)   {...}
+    func HTTPY  (r *http.Request) (Y, error)   {...}
+    func HTTPZ  (r *http.Request) (*Z, error)  {...}
+    func z.HTTPZ(r *http.Request) (z.Z, error) {...}
 
 VarHandler will generate an http handler :
 
