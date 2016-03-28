@@ -36,7 +36,7 @@ type Param struct {
 }
 
 func (fd *FuncDefinition) ParseResults(results *ast.FieldList) bool {
-	if len(results.List) == 0 {
+	if results == nil || len(results.List) == 0 {
 		log.Printf("%s should at least return an error", fd.Name)
 		return false
 	}
