@@ -1,4 +1,4 @@
-// VarHandler genrate wrappers for variing http handler funcs
+// VarHandler generate wrappers for variing http handler funcs
 //
 // To ease http development process,
 // enabling reusability
