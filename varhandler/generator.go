@@ -1,7 +1,8 @@
 // VarHandler genrate wrappers for variing http handler funcs
 //
-// To ease http development process, without breaking
-// normal usage.
+// To ease http development process,
+// enabling reusability
+// and remaining http complient a la go.
 //
 // Given a pkg :
 // 	//go:generate varhandler -func F
