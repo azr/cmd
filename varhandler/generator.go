@@ -22,27 +22,27 @@
 //       var err error
 //       x, err := HTTPX(r)
 //       if err != nil {
-//       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+//       	HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 //       	return
 //       }
 //       y, err := HTTPY(r)
 //       if err != nil {
-//       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+//       	HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 //       	return
 //       }
 //       z, err := HTTPZ(r)
 //       if err != nil {
-//       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+//       	HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 //       	return
 //       }
 //       zz, err := z.HTTPZ(r)
 //       if err != nil {
-//       	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+//       	HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 //       	return
 //       }
 //       resp, status, err := F(x, y, z, zz)
 //       if err != nil {
-//       	HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+//       	HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 //       	return
 //       }
 //       if status != 0 { // code generated if status is returned
@@ -53,7 +53,7 @@
 //       }
 //   }
 //
-//   func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, status int, err error) {
+//   func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, r *http.Request, status int, err error) {
 //       type HttpError interface {
 //       	HttpError() (error string, code int)
 //       }
@@ -66,6 +66,8 @@
 //       case HttpError:
 //       	err, code := t.HttpError()
 //       	http.Error(w, err, code)
+//       case http.Handler:
+//       	t.ServeHTTP(w, r)
 //       case SelfHttpError:
 //       	t.HttpError(w)
 //       }
@@ -398,7 +400,7 @@ func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
 {{range $i, $param := .Params}}
 	param{{$i}}, err := {{if ne $param.Package ""}}{{$param.Package}}.{{end}}{{$param.GeneratorName}}(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 {{end}}
@@ -410,7 +412,7 @@ func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
 {{end}}
 	{{if .Response}}resp, {{end}}{{if .Status}}status, {{end}}err = {{.Name}}({{range $i, $param := .Params}} {{if gt $i 0}},{{end}} param{{$i}}{{end}})
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 {{if .Status}}
@@ -427,7 +429,7 @@ func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
 `
 
 const utilFuncs = `
-func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, status int, err error) {
+func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, r *http.Request, status int, err error) {
 	type HttpError interface {
 		HttpError() (error string, code int)
 	}
@@ -440,6 +442,8 @@ func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, status int, err err
 	case HttpError:
 		err, code := t.HttpError()
 		http.Error(w, err, code)
+	case http.Handler:
+		t.ServeHTTP(w, r)
 	case SelfHttpError:
 		t.HttpError(w)
 	}

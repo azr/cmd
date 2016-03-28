@@ -10,25 +10,25 @@ func SimpleHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPX(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param1, err := HTTPY(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param2, err := HTTPZ(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	err = Simple(param0, param1, param2)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -39,31 +39,31 @@ func ImportHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPX(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param1, err := HTTPY(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param2, err := HTTPZ(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param3, err := z.HTTPZ(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	err = Import(param0, param1, param2, param3)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -74,19 +74,19 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPX(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param1, err := HTTPY(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param2, err := HTTPZ(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -94,7 +94,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	status, err = Status(param0, param1, param2)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -109,19 +109,19 @@ func ResponseHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPX(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param1, err := HTTPY(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param2, err := HTTPZ(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -129,7 +129,7 @@ func ResponseHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, err = Response(param0, param1, param2)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -144,19 +144,19 @@ func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPX(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param1, err := HTTPY(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param2, err := HTTPZ(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -166,7 +166,7 @@ func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, status, err = ResponseStatus(param0, param1, param2)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -185,7 +185,7 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPUser(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -193,7 +193,7 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	status, err = CreateUser(param0)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -208,7 +208,7 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPUserID(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -218,7 +218,7 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, status, err = GetUser(param0)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -237,13 +237,13 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPUserID(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param1, err := HTTPUser(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -251,7 +251,7 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	status, err = UpdateUser(param0, param1)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -266,7 +266,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPUserID(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -274,7 +274,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	status, err = DeleteUser(param0)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -284,7 +284,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, status int, err error) {
+func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, r *http.Request, status int, err error) {
 	type HttpError interface {
 		HttpError() (error string, code int)
 	}
@@ -297,6 +297,8 @@ func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, status int, err err
 	case HttpError:
 		err, code := t.HttpError()
 		http.Error(w, err, code)
+	case http.Handler:
+		t.ServeHTTP(w, r)
 	case SelfHttpError:
 		t.HttpError(w)
 	}

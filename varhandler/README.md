@@ -25,27 +25,27 @@ VarHandler will generate an http handler :
         var err error
         x, err := HTTPX(r)
         if err != nil {
-        	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+        	HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
         	return
         }
         y, err := HTTPY(r)
         if err != nil {
-        	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+        	HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
         	return
         }
         z, err := HTTPZ(r)
         if err != nil {
-        	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+        	HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
         	return
         }
         zz, err := z.HTTPZ(r)
         if err != nil {
-        	HandleHttpErrorWithDefaultStatus(w, http.StatusBadRequest, err)
+        	HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
         	return
         }
         resp, status, err := F(x, y, z, zz)
         if err != nil {
-        	HandleHttpErrorWithDefaultStatus(w, http.StatusInternalServerError, err)
+        	HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
         	return
         }
         if status != 0 { // code generated if status is returned
@@ -56,7 +56,7 @@ VarHandler will generate an http handler :
         }
     }
 
-    func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, status int, err error) {
+    func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, r *http.Request, status int, err error) {
         type HttpError interface {
         	HttpError() (error string, code int)
         }
@@ -69,6 +69,8 @@ VarHandler will generate an http handler :
         case HttpError:
         	err, code := t.HttpError()
         	http.Error(w, err, code)
+        case http.Handler:
+        	t.ServeHTTP(w, r)
         case SelfHttpError:
         	t.HttpError(w)
         }
