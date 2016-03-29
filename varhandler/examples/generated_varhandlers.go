@@ -305,11 +305,21 @@ func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, r *http.Request, st
 }
 
 func HandleHttpResponse(w http.ResponseWriter, r *http.Request, resp interface{}) {
+	type Byter interface {
+		Bytes() []byte
+	}
+	type Stringer interface {
+		String() string
+	}
 	switch t := resp.(type) {
 	default:
 		// I don't know that type !
 	case http.Handler:
-		t.ServeHTTP(w, r)
+		t.ServeHTTP(w, r) // resp knows how to handle itself
+	case Byter:
+		w.Write(t.Bytes())
+	case Stringer:
+		w.Write([]byte(t.String()))
 	case []byte:
 		w.Write(t)
 	}
