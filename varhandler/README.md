@@ -22,7 +22,7 @@ instantiator/validators)
 varhandler will generate steps 1, 2, 4 and 5
 
 
-Variing types of response
+###Variing types of response
 
 The function must return an error. Otherwise return can take multiple forms:
 
