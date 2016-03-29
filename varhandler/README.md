@@ -22,7 +22,7 @@ instantiator/validators)
 varhandler will generate steps 1, 2, 4 and 5
 
 
-###Variing types of response
+##Variing types of response
 
 The function must return an error. Otherwise return can take multiple forms:
 
@@ -38,15 +38,14 @@ The function must return an error. Otherwise return can take multiple forms:
     func F(x X, y Y) (response interface{}, status int, err error) // sets status and does Response Handling if no error is set
 
 
-Variing parameters
+##Variing parameters
 
-The functions takes one or more arguments. Those arguments need to have http
-### instantiators
+The functions takes one or more arguments. Those arguments need to have http instantiators
 
     HTTPX(r *http.Request) (x X, err error)
 
 
-Error handling
+##Error handling
 
 If an instantiation error occurs:
 
@@ -57,7 +56,7 @@ If the wrapped func returns an error
     HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err) // will be called
 
 
-Response handling
+## Response handling
 
 check HandleHttpResponse's code
 
