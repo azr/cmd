@@ -2,7 +2,8 @@ package main
 
 import "github.com/azr/generators/varhandler/examples/z"
 
-//z.Z defines the HTTPZ function
+//pkg z defines an HTTPZ function
+//go:generate varhandler -func Import
 func Import(x X, y Y, z *Z, zz z.Z) error {
 	return nil
 }

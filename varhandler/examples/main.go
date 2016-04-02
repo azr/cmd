@@ -1,4 +1,4 @@
-//go:generate varhandler -func Simple,Import,Status,Response,ResponseStatus,CreateUser,GetUser,UpdateUser,DeleteUser
+//go:generate varhandler -func Status,Response,ResponseStatus
 package main
 
 import "net/http"

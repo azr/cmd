@@ -1,3 +1,4 @@
+//go:generate varhandler -func CreateUser,GetUser,UpdateUser,DeleteUser -output user_handlers_generated.go
 package main
 
 import (
