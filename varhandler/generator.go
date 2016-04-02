@@ -200,6 +200,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"text/template"
 
@@ -281,9 +282,6 @@ func main() {
 			g.writeFuncDef(definition)
 		}
 	}
-
-	g.Printf(utilFuncs)
-
 	// Format the output.
 	src := g.format()
 
@@ -296,6 +294,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("writing output: %s", err)
 	}
+
+	// copy helper file to pkg
+	utilsFile := "varhandler_helpers.go"
+
+	// copy file utils
+	_, currFile, _, ok := runtime.Caller(0)
+	if !ok {
+		log.Fatalf("No caller information")
+	}
+
+	utils.CopyFile(filepath.Join(dir, utilsFile), filepath.Join(filepath.Dir(currFile), utilsFile), 0)
 }
 
 // Generator holds the state of the analysis. Primarily used to buffer
@@ -526,49 +535,6 @@ func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
         HandleHttpResponse(w, r, resp)
     }
 {{end}}
-}
-`
-
-const utilFuncs = `
-func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, r *http.Request, status int, err error) {
-    type HttpError interface {
-        HttpError() (error string, code int)
-    }
-    type SelfHttpError interface {
-        HttpError(w http.ResponseWriter)
-    }
-    switch t := err.(type) {
-    default:
-        w.WriteHeader(status)
-    case HttpError:
-        err, code := t.HttpError()
-        http.Error(w, err, code)
-    case http.Handler:
-        t.ServeHTTP(w, r)
-    case SelfHttpError:
-        t.HttpError(w)
-    }
-}
-
-func HandleHttpResponse(w http.ResponseWriter, r *http.Request, resp interface{}) {
-    type Byter interface {
-       Bytes() []byte
-    }
-    type Stringer interface {
-       String() string
-    }
-    switch t := resp.(type) {
-    default:
-       // I don't know that type !
-    case http.Handler:
-       t.ServeHTTP(w, r) // resp knows how to handle itself
-    case Byter:
-       w.Write(t.Bytes())
-    case Stringer:
-       w.Write([]byte(t.String()))
-    case []byte:
-       w.Write(t)
-    }
 }
 `
 
