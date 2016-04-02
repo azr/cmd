@@ -231,7 +231,7 @@ func main() {
 	var funcNames, output string
 	{ // init
 		flag.StringVar(&funcNames, "func", "", "comma-separated list of func names; must be set")
-		flag.StringVar(&output, "output", "", "output file name; default pkgdir/generated_varhandlers.go")
+		flag.StringVar(&output, "output", "", "output file name;\n\tdefault for multiple funcs: pkgdir/generated_varhandlers.go\n\tdefault for one func: pkgdir/<toLower(funcName)>_handler_generated.go")
 		flag.Usage = Usage
 		flag.Parse()
 	}
@@ -288,7 +288,11 @@ func main() {
 	// Write to file.
 	outputName := output
 	if outputName == "" {
-		outputName = filepath.Join(dir, "generated_varhandlers.go")
+		if len(funcs) == 1 {
+			outputName = filepath.Join(dir, fmt.Sprintf("%s_handler_generated.go", strings.ToLower(funcs[0])))
+		} else {
+			outputName = filepath.Join(dir, "generated_varhandlers.go")
+		}
 	}
 	err := ioutil.WriteFile(outputName, src, 0644)
 	if err != nil {
