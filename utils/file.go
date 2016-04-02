@@ -11,7 +11,7 @@ import (
 //https://github.com/golang/go/blob/fdba5a7544e54227c910ae3b26511c718df786a1/src/cmd/dist/util.go
 //etc.
 //
-//it's to update when the system pkg will implement CopyFile
+//it's to update when the system pkg implements CopyFile
 
 const (
 	writeExec = 1 << iota
