@@ -26,12 +26,12 @@
 //
 //  func F(x X, y Y) (err error)                                   // default return status when no error is 200 - OK
 //                                                                 // if the error is unknown the status will be
-//                                                                 // InternalServerError - see HandleHttpErrorWithDefaultStatus
+//                                                                 // InternalServerError - see HandleHTTPErrorWithDefaultStatus
 //                                                                 // for error types
 //
 //  func F(x X, y Y) (status int, err error)                       // sets returned status if error is nil
 //
-//  func F(x X, y Y) (response interface{}, err error)             // specific response See HandleHttpResponse code
+//  func F(x X, y Y) (response interface{}, err error)             // specific response See HandleHTTPResponse code
 //
 //  func F(x X, y Y) (response interface{}, status int, err error) // sets status and does Response Handling if no error is set
 //
@@ -44,14 +44,14 @@
 // Error handling
 //
 // If an instantiation error occurs:
-//  HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err) // will be called
+//  HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err) // will be called
 //
 // If the wrapped func returns an error
-//  HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err) // will be called
+//  HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err) // will be called
 //
 // Response handling
 //
-// check HandleHttpResponse's code
+// check HandleHTTPResponse's code
 //
 // Example
 //
@@ -111,40 +111,40 @@
 //       var err error
 //       x, err := HTTPX(r)
 //       if err != nil {
-//          HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+//          HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 //          return
 //       }
 //       y, err := HTTPY(r)
 //       if err != nil {
-//          HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+//          HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 //          return
 //       }
 //       z, err := HTTPZ(r)
 //       if err != nil {
-//          HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+//          HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 //          return
 //       }
 //       zz, err := z.HTTPZ(r)
 //       if err != nil {
-//          HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+//          HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 //          return
 //       }
 //       resp, status, err := F(x, y, z, zz)
 //       if err != nil {
-//          HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
+//          HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 //          return
 //       }
 //       if status != 0 { // code generated if status is returned by F
 //          w.WriteHeader(status)
 //       }
 //       if resp != nil { // code generated if resp object is returned by F
-//          HandleHttpResponse(w, r, resp)
+//          HandleHTTPResponse(w, r, resp)
 //       }
 //   }
 //
 //   //Helper funcs
 //
-//   func HandleHttpErrorWithDefaultStatus(w http.ResponseWriter, r *http.Request, status int, err error) {
+//   func HandleHTTPErrorWithDefaultStatus(w http.ResponseWriter, r *http.Request, status int, err error) {
 //       type HttpError interface {
 //          HttpError() (error string, code int)
 //       }
@@ -164,7 +164,7 @@
 //       }
 //   }
 //
-//   func HandleHttpResponse(w http.ResponseWriter, r *http.Request, resp interface{}) {
+//   func HandleHTTPResponse(w http.ResponseWriter, r *http.Request, resp interface{}) {
 //       type Byter interface {
 //          Bytes() []byte
 //       }
@@ -514,7 +514,7 @@ func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
 {{range $i, $param := .Params}}
     param{{$i}}, err := {{if ne $param.Package ""}}{{$param.Package}}.{{end}}{{$param.GeneratorName}}(r)
     if err != nil {
-        HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+        HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
         return
     }
 {{end}}
@@ -526,7 +526,7 @@ func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
 {{end}}
     {{if .Response}}resp, {{end}}{{if .Status}}status, {{end}}err = {{.Name}}({{range $i, $param := .Params}} {{if gt $i 0}},{{end}} param{{$i}}{{end}})
     if err != nil {
-        HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
+        HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
         return
     }
 {{if .Status}}
@@ -536,7 +536,7 @@ func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
 {{end}}
 {{if .Response}}
     if resp != nil {
-        HandleHttpResponse(w, r, resp)
+        HandleHTTPResponse(w, r, resp)
     }
 {{end}}
 }
