@@ -196,6 +196,8 @@ import (
 	"go/format"
 	"go/parser"
 	"go/token"
+	"go/types"
+	"go/importer"
 	"io/ioutil"
 	"log"
 	"os"
@@ -203,10 +205,6 @@ import (
 	"runtime"
 	"strings"
 	"text/template"
-
-	"golang.org/x/tools/go/types"
-
-	_ "golang.org/x/tools/go/gcimporter"
 
 	"github.com/azr/generators/utils"
 )
@@ -235,6 +233,7 @@ func main() {
 		flag.Usage = Usage
 		flag.Parse()
 	}
+    
 	if len(funcNames) == 0 {
 		flag.Usage()
 		os.Exit(2)
@@ -397,7 +396,6 @@ func (g *Generator) parsePackage(directory string, names []string, text interfac
 			pkg:  g.pkg,
 		})
 	}
-
 	if len(astFiles) == 0 {
 		log.Fatalf("%s: no buildable Go files", directory)
 	}
@@ -413,7 +411,7 @@ func (pkg *Package) check(fs *token.FileSet, astFiles []*ast.File) {
 	pkg.defs = make(map[*ast.Ident]types.Object)
 	config := types.Config{
 		FakeImportC: true,
-		Packages:    make(map[string]*types.Package),
+		Importer: importer.Default(),
 	}
 	info := &types.Info{
 		Defs: pkg.defs,
@@ -423,7 +421,6 @@ func (pkg *Package) check(fs *token.FileSet, astFiles []*ast.File) {
 		log.Fatalf("checking package: %s", err)
 	}
 	pkg.typesPkg = typesPkg
-	pkg.pkgs = config.Packages
 }
 
 // generateImportPaths parses the funcs that are going to be called
@@ -441,11 +438,16 @@ func (g *Generator) generateImportPaths(funcName string) FuncDefinition {
 			if file.found {
 				for _, param := range file.funcDefinition.Params {
 					if param.Package != "" {
-						for path, pkg := range g.pkg.pkgs {
+                        imported := false
+						for _, pkg := range g.pkg.typesPkg.Imports() {
 							if pkg.Name() == param.Package {
-								g.Printf("import %s \"%s\"\n", param.Package, path)
+								g.Printf("import %s \"%s\"\n", param.Package, pkg.Path())
+								imported = true
 							}
 						}
+                        if imported == false {
+                            log.Fatalf("could not find pkg %s", param.Package)
+                        }
 					}
 				}
 

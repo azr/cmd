@@ -5,7 +5,7 @@ import (
 	"go/ast"
 	"log"
 
-	_ "golang.org/x/tools/go/gcimporter"
+	_ "go/importer"
 )
 
 //FuncDefinition represents
