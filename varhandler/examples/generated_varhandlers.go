@@ -9,19 +9,19 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPX(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param1, err := HTTPY(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param2, err := HTTPZ(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -29,7 +29,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	status, err = Status(param0, param1, param2)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -44,19 +44,19 @@ func ResponseHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPX(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param1, err := HTTPY(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param2, err := HTTPZ(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -64,12 +64,12 @@ func ResponseHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, err = Response(param0, param1, param2)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
 	if resp != nil {
-		HandleHttpResponse(w, r, resp)
+		HandleHTTPResponse(w, r, resp)
 	}
 
 }
@@ -79,19 +79,19 @@ func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPX(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param1, err := HTTPY(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param2, err := HTTPZ(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -101,7 +101,7 @@ func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, status, err = ResponseStatus(param0, param1, param2)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -110,7 +110,7 @@ func ResponseStatusHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if resp != nil {
-		HandleHttpResponse(w, r, resp)
+		HandleHTTPResponse(w, r, resp)
 	}
 
 }

@@ -9,25 +9,25 @@ func SimpleHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPX(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param1, err := HTTPY(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param2, err := HTTPZ(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	err = Simple(param0, param1, param2)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 

@@ -9,7 +9,7 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPUser(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -17,7 +17,7 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	status, err = CreateUser(param0)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -32,7 +32,7 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPUserID(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -42,7 +42,7 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, status, err = GetUser(param0)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -51,7 +51,7 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if resp != nil {
-		HandleHttpResponse(w, r, resp)
+		HandleHTTPResponse(w, r, resp)
 	}
 
 }
@@ -61,13 +61,13 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPUserID(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
 	param1, err := HTTPUser(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -75,7 +75,7 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	status, err = UpdateUser(param0, param1)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -90,7 +90,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	param0, err := HTTPUserID(r)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
 		return
 	}
 
@@ -98,7 +98,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	status, err = DeleteUser(param0)
 	if err != nil {
-		HandleHttpErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
 		return
 	}
 
