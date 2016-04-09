@@ -510,34 +510,34 @@ func (g *Generator) writeFuncDef(fd FuncDefinition) {
 
 const handlerWrap = `
 func {{.Name}}Handler(w http.ResponseWriter, r *http.Request) {
-    var err error
+	var err error
 {{range $i, $param := .Params}}
-    param{{$i}}, err := {{if ne $param.Package ""}}{{$param.Package}}.{{end}}{{$param.GeneratorName}}(r)
-    if err != nil {
-        HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
-        return
-    }
+	param{{$i}}, err := {{if ne $param.Package ""}}{{$param.Package}}.{{end}}{{$param.GeneratorName}}(r)
+	if err != nil {
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusBadRequest, err)
+		return
+	}
 {{end}}
 {{if .Response}}
-    var resp interface{}
+	var resp interface{}
 {{end}}
 {{if .Status}}
-    var status int
+	var status int
 {{end}}
-    {{if .Response}}resp, {{end}}{{if .Status}}status, {{end}}err = {{.Name}}({{range $i, $param := .Params}} {{if gt $i 0}},{{end}} param{{$i}}{{end}})
-    if err != nil {
-        HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
-        return
-    }
+	{{if .Response}}resp, {{end}}{{if .Status}}status, {{end}}err = {{.Name}}({{range $i, $param := .Params}} {{if gt $i 0}},{{end}} param{{$i}}{{end}})
+	if err != nil {
+		HandleHTTPErrorWithDefaultStatus(w, r, http.StatusInternalServerError, err)
+		return
+	}
 {{if .Status}}
-    if status != 0 {
-        w.WriteHeader(status)
-    }
+	if status != 0 {
+		w.WriteHeader(status)
+	}
 {{end}}
 {{if .Response}}
-    if resp != nil {
-        HandleHTTPResponse(w, r, resp)
-    }
+	if resp != nil {
+		HandleHTTPResponse(w, r, resp)
+	}
 {{end}}
 }
 `
