@@ -58,17 +58,15 @@ import (
 	"go/ast"
 	"go/build"
 	"go/format"
+	"go/importer"
 	"go/parser"
 	"go/token"
+	"go/types"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"go/types"
-
-	_ "go/importer"
 )
 
 var (
@@ -251,7 +249,10 @@ func (g *Generator) parsePackage(directory string, names []string, text interfac
 // check type-checks the package. The package must be OK to proceed.
 func (pkg *Package) check(fs *token.FileSet, astFiles []*ast.File) {
 	pkg.defs = make(map[*ast.Ident]types.Object)
-	config := types.Config{FakeImportC: true}
+	config := types.Config{
+		FakeImportC: true,
+		Importer:    importer.Default(),
+	}
 	info := &types.Info{
 		Defs: pkg.defs,
 	}
