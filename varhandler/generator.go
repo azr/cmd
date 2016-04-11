@@ -194,10 +194,10 @@ import (
 	"go/ast"
 	"go/build"
 	"go/format"
+	"go/importer"
 	"go/parser"
 	"go/token"
 	"go/types"
-	"go/importer"
 	"io/ioutil"
 	"log"
 	"os"
@@ -233,7 +233,7 @@ func main() {
 		flag.Usage = Usage
 		flag.Parse()
 	}
-    
+
 	if len(funcNames) == 0 {
 		flag.Usage()
 		os.Exit(2)
@@ -411,7 +411,7 @@ func (pkg *Package) check(fs *token.FileSet, astFiles []*ast.File) {
 	pkg.defs = make(map[*ast.Ident]types.Object)
 	config := types.Config{
 		FakeImportC: true,
-		Importer: importer.Default(),
+		Importer:    importer.Default(),
 	}
 	info := &types.Info{
 		Defs: pkg.defs,
@@ -438,16 +438,16 @@ func (g *Generator) generateImportPaths(funcName string) FuncDefinition {
 			if file.found {
 				for _, param := range file.funcDefinition.Params {
 					if param.Package != "" {
-                        imported := false
+						imported := false
 						for _, pkg := range g.pkg.typesPkg.Imports() {
 							if pkg.Name() == param.Package {
 								g.Printf("import %s \"%s\"\n", param.Package, pkg.Path())
 								imported = true
 							}
 						}
-                        if imported == false {
-                            log.Fatalf("could not find pkg %s", param.Package)
-                        }
+						if imported == false {
+							log.Fatalf("could not find pkg %s", param.Package)
+						}
 					}
 				}
 
