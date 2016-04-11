@@ -66,9 +66,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"golang.org/x/tools/go/types"
+	"go/types"
 
-	_ "golang.org/x/tools/go/gcimporter"
+	_ "go/importer"
 )
 
 var (
