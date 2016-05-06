@@ -1,0 +1,38 @@
+
+//New{{.Type}}Pool instantiates a typed pool of {{.Type}}
+//{{.Type}}Pool will be used to temporary store {{.Type}} objects 
+//for further usage and therefore save the memory 
+//allocation and garbage collection overhead.
+//
+//Any object can be freed at any time.
+//Use a freelist if don't want any of those objects to be freed.
+//See sync.Pool for a better understanding
+func New{{.Type}}Pool() *{{.Type}}Pool {
+    return &{{.Type}}Pool{
+        sync.Pool{
+            New: func() interface{} {
+                return new({{.Type}})
+            },
+        },
+    }
+}
+
+//{{.Type}}Pool is a typed pool of {{.Type}}
+//It temporarily stores instantiations 
+//of {{.Type}} for later use.
+type {{.Type}}Pool struct {
+    sync.Pool
+}
+
+//Get instantiates a {{.Type}} if none is available
+//in pool, otherwise an available one will be returned.
+//see sync.Pool.Get 
+func (p {{.Type}}Pool) Get() *{{.Type}} {
+   return p.Pool.Get().(*{{.Type}})
+}
+
+//Store a {{.Type}} into pool
+//see sync.Pool.Put
+func (p {{.Type}}Pool) Put(t *{{.Type}})  {
+   p.Pool.Put(t)
+}

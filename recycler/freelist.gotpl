@@ -1,0 +1,35 @@
+
+//New{{.Type}}FreeList instantiates a freelist of {{.Type}}
+//{{.Type}}FreeList will be used to temporary store {{.Type}} objects 
+//for further usage and therefore save the memory 
+//allocation and garbage collection overhead.
+//
+//A {{.Type}}FreeList references at most {{.Size}} {{.Type}} objects
+//in a chan.
+//This prevents garbage collection for them
+func New{{.Type}}FreeList() *{{.Type}}FreeList {
+	return &{{.Type}}FreeList{
+		c: make(chan {{.Type}}, {{.Size}}),
+	}
+}
+
+type {{.Type}}FreeList struct {
+	c chan {{.Type}}
+}
+
+func (p {{.Type}}FreeList) Get() *{{.Type}} {
+	select {
+	default:
+		return new({{.Type}})
+	case t := <-p.c:
+		return t
+	}
+}
+
+func (p {{.Type}}FreeList) Put(t *{{.Type}}) {
+	select {
+	default:
+		//no more room
+	case p.c <- t:
+	}
+}
