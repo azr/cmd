@@ -9,12 +9,12 @@
 //This prevents garbage collection for them
 func New{{.Type}}FreeList() *{{.Type}}FreeList {
 	return &{{.Type}}FreeList{
-		c: make(chan {{.Type}}, {{.Size}}),
+		c: make(chan *{{.Type}}, {{.Size}}),
 	}
 }
 
 type {{.Type}}FreeList struct {
-	c chan {{.Type}}
+	c chan *{{.Type}}
 }
 
 func (p {{.Type}}FreeList) Get() *{{.Type}} {

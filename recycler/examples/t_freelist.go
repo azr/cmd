@@ -12,12 +12,12 @@ package examples
 //This prevents garbage collection for them
 func NewTFreeList() *TFreeList {
 	return &TFreeList{
-		c: make(chan T, 50),
+		c: make(chan *T, 50),
 	}
 }
 
 type TFreeList struct {
-	c chan T
+	c chan *T
 }
 
 func (p TFreeList) Get() *T {
@@ -27,7 +27,6 @@ func (p TFreeList) Get() *T {
 	case t := <-p.c:
 		return t
 	}
-
 }
 
 func (p TFreeList) Put(t *T) {
