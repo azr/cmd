@@ -1,3 +1,5 @@
+:warning: Deprecated >>>> use [recycler](/recycler) instead
+
 # pooler
 Pooler is a tool to automate the creation of typed sync.Pool wrappers in golang
 
