@@ -15,3 +15,10 @@ You can generate multiple type of recycler, they will have different names, but 
 //go:generate recycler -type=<T> -size <buffer_size> -template freelist.gotpl
 ```
 
+* To generate your own recycler: 
+```
+//go:generate recycler -type=<T> -size <buffer_size> -template /path/to/recycler.tpl
+```
+available template vars will be `{{.Type}}` and `{{.Size}}`
+
+Prs are welcome too !
