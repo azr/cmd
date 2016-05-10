@@ -3,7 +3,7 @@ recycler is a tool to automate the creation of typed memory recyclers in golang
 
 [![GoDoc](https://godoc.org/github.com/azr/generators/recycler?status.png)](https://godoc.org/github.com/azr/generators/recycler)
 
-You can generate multiple type of recycler, they all have the same signature :
+You can generate multiple type of recycler, they will have different names, but have the same signature :
 
 * To generate pool backed recycler: 
 ```
