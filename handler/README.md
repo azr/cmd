@@ -53,7 +53,7 @@ so now you can just worry about what PutJob does.
 pkg existence will be checked. The pkg needs to have funcs :
 
     func NewDecoder(r io.Reader) *Decoder
-    func NewEncoder(r io.Reader) *Encoder
+    func NewEncoder(w io.Writer) *Encoder
 
 and types
 
